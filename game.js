@@ -25,15 +25,20 @@ const EVENTS = {
 		]),
 	6 : new RefreshDisplay("There are aombies in the hall way!"),
 	7 : new Choice([
-			new Option(["Fight!", new gotoLine(10)]),
-			new Option(["Stay", new gameover()])
+			new Option(["Fight!", new gotoLine(12)]),
+			new Option(["Stay", new gotoLine(10)])
 		]),
 	8 : new RefreshDisplay("Zombies are tyring to break in!"),
 	9 : new Choice([
-			new Option(["Fight!", new gotoLine(10)]),
-			new Option(["Stay", new gameover()])
+			new Option(["Fight!", new gotoLine(12)]),
+			new Option(["Stay", new gotoLine(10)])
+		]),
+	10 : new RefreshDisplay("Game Over"),
+	11 : new Choice([
+			new Option(["Restart", new gotoLine(0), new initializeGame()])
 		])
 };
+
 
 var inv = new Inventory(0, 3, 0, 0, 0, 0);
 
@@ -48,6 +53,16 @@ function Weapon(name, position, type, atk, capacity, carryCapacity, weight, dual
 	this.carryCapacity = carryCapacity; // total amount of ammo this weapon can carry;
 	this.weight = weight; // the more heavy this weapon is, the less round of attack can be made;
 	this.dualable = dualable; // if this weapon can be dual;
+}
+
+
+function initializeGame() {
+	this.run = run;
+	
+	function run() {
+		inv = new Inventory(0, 3, 0, 0, 0, 0);
+		save = new Save(0, false, inv);
+	}
 }
 
 
@@ -83,13 +98,6 @@ function Save(progress, eventBreak, inv) {
 	this.inv = inv;
 }
 
-function gameover() {
-	this.run = run;
-	function run() {
-		document.getElementById("options").innerHTML = "";
-		new RefreshDisplay("Game Over!").run();
-	}
-}
 
 function next(buttonID) {
 	save.eventBreak = false;
