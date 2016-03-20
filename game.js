@@ -6,35 +6,56 @@ const WEAPONS = {
 	2 : new Weapon("Pistol",   2, 1, 20, 15, 0, 25, true)
 };
 
+const IMAGES = {
+	0 : new ImageURL("https://choose-your-own-adventure-leohu.c9users.io/loading.jpg", "#000")
+};
+
 const EVENTS = {
 	0 : new RefreshDisplay("Please choose a map"),
 	1 : new Choice([
 			new Option(["Dead Center", new gotoLine(2)]),
-			new Option(["Dark Carnival", new gotoLine(8)])
+			new Option(["Dark Carnival", new gotoLine(9)])
 		]),
-	2 : new RefreshDisplay("Please choose a weapon"),
-	3 : new Choice([
-			new Option([WEAPONS[0].name, new gotoLine(4), new weaponEquip(0)]),
-			new Option([WEAPONS[1].name, new gotoLine(4), new weaponEquip(1)]),
-			new Option([WEAPONS[2].name, new gotoLine(4), new weaponEquip(2)])
+	2 : new UpdateOutput([
+		"Here should come some story or conversation or what ever",
+		"And Wange is going to add it so Leo will not care about it for now",
+		"All Leo needs is to test if this object works."
 		]),
-	4 : new RefreshDisplay("Are you going to open the door?"),
-	5 : new Choice([
-			new Option(["Yes", new gotoLine(6)]),
-			new Option(["No", new gotoLine(8)])
+	3 : new RefreshDisplay("Please choose a weapon"),
+	4 : new Choice([
+			new Option([WEAPONS[0].name,
+				new gotoLine(5),
+				new weaponEquip(0),
+				new systemMessage("You Pickup a " + WEAPONS[0].name)
+				]),
+			new Option([WEAPONS[1].name,
+				new gotoLine(5),
+				new weaponEquip(1),
+				new systemMessage("You Pickup a " + WEAPONS[1].name)
+				]),
+			new Option([WEAPONS[2].name,
+				new gotoLine(5),
+				new weaponEquip(2),
+				new systemMessage("You Pickup a " + WEAPONS[2].name)
+				]),
 		]),
-	6 : new RefreshDisplay("There are aombies in the hall way!"),
-	7 : new Choice([
-			new Option(["Fight!", new gotoLine(12)]),
-			new Option(["Stay", new gotoLine(10)])
+	5 : new RefreshDisplay("Are you going to open the door?"),
+	6 : new Choice([
+			new Option(["Yes", new gotoLine(7), new systemMessage("You opened the door.")]),
+			new Option(["No", new gotoLine(9), new systemMessage("You just stood in front of the and did nothing.")])
 		]),
-	8 : new RefreshDisplay("Zombies are tyring to break in!"),
-	9 : new Choice([
-			new Option(["Fight!", new gotoLine(12)]),
-			new Option(["Stay", new gotoLine(10)])
+	7 : new RefreshDisplay("There are zaombies in the hall way!"),
+	8 : new Choice([
+			new Option(["Fight!", new gotoLine(13)]),
+			new Option(["Stay", new gotoLine(11), new systemMessage("Zombies came onto you and ate you.")])
 		]),
-	10 : new RefreshDisplay("Game Over"),
-	11 : new Choice([
+	9 : new RefreshDisplay("Zombies are tyring to break in!"),
+	10 : new Choice([
+			new Option(["Fight!", new gotoLine(13)]),
+			new Option(["Stay", new gotoLine(11), new systemMessage("Zombies came onto you and ate you.")])
+		]),
+	11 : new RefreshDisplay("Game Over"),
+	12 : new Choice([
 			new Option(["Restart", new gotoLine(0), new initializeGame()])
 		])
 };
@@ -55,6 +76,22 @@ function Weapon(name, position, type, atk, capacity, carryCapacity, weight, dual
 	this.dualable = dualable; // if this weapon can be dual;
 }
 
+function ImageURL(URL, BGColor) {
+	this.URL = URL;
+	this.BGColor = BGColor;
+	this.bodyBG = bodyBG;
+	
+	function bodyBG() {
+		document.body.style.background = this.BGColor + " url('" + this.URL + "') no-repeat";
+	}
+}
+
+function UpdateBG(id) {
+	this.run = run;
+	function run() {
+		IMAGES[id].bodyBG();
+	}
+}
 
 function initializeGame() {
 	this.run = run;
@@ -62,6 +99,51 @@ function initializeGame() {
 	function run() {
 		inv = new Inventory(0, 3, 0, 0, 0, 0);
 		save = new Save(0, false, inv);
+		document.getElementById("output").innerHTML = "";
+	}
+}
+
+
+function systemMessage(input) {
+	this.run = run;
+	function run() {
+		updateOutput();
+		return false;
+	}
+	function updateOutput() {
+		document.getElementById("output").innerHTML += "<p class=\"text-primary\">" + input + "</p>";
+		document.getElementById('output').scrollTop += 20;
+	}
+	
+}
+
+function UpdateOutput(argu) {
+	this.run = run;
+	var counter = 0;
+	var id;
+	
+	function run() {
+		updateOutput();
+		if (argu.length > 1) {
+			id = setInterval(updateOutput, 500);
+		}
+		return true;
+	}
+	function updateOutput() {
+		if (counter == argu.length) {
+			clearInterval(id);
+			save.progress++;
+			next();
+			counter = 0;
+		} else if (counter > argu.length) {
+			clearInterval(id);
+		} else if (counter < argu.length) {
+			document.getElementById("options").innerHTML = "";
+			document.getElementById("display").innerHTML = "";
+			document.getElementById("output").innerHTML += argu[counter] + "<br />";
+			document.getElementById('output').scrollTop += 20;
+			counter++;
+		}
 	}
 }
 
