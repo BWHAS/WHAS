@@ -1,13 +1,14 @@
 /*function Weapon(name, position, type, atk, capacity, carryCapacity, weight, dualable);
  *for more detail please check the constructor */
 const WEAPONS = {
-	0 : new Weapon("Fire Axe", 2, 2, 70, 0, 0, 70, false),
-	1 : new Weapon("Crowbar",  2, 2, 50, 0, 0, 50, false),
-	2 : new Weapon("Pistol",   2, 1, 20, 15, 0, 25, true)
+	0 : new Weapon("Fire Axe", 2, 2, 70, 0, 0, 70, 0),
+	1 : new Weapon("Crowbar",  2, 2, 50, 0, 0, 50, 0),
+	2 : new Weapon("Pistol",   2, 1, 20, 15, 0, 25, 3),
+	3 : new Weapon("Dual Pistol", 2, 1, 40, 30, 9, 20, 0)
 };
 
 const IMAGES = {
-	0 : new ImageURL("https://choose-your-own-adventure-leohu.c9users.io/loading.jpg", "#000")
+	0 : new ImageURL("https://choose-your-own-adventure-leohu.c9users.io/picture/loading.jpg", "#000")
 };
 
 const EVENTS = {
@@ -17,9 +18,9 @@ const EVENTS = {
 			new Option(["Dark Carnival", new gotoLine(9)])
 		]),
 	2 : new UpdateOutput([
-		"Here should come some story or conversation or what ever",
-		"And Wange is going to add it so Leo will not care about it for now",
-		"All Leo needs is to test if this object works."
+			"Here should come some story or conversation or what ever",
+			"And Wange is going to add it so Leo will not care about it for now",
+			"All Leo needs is to test if this object works."
 		]),
 	3 : new RefreshDisplay("Please choose a weapon"),
 	4 : new Choice([
@@ -47,7 +48,7 @@ const EVENTS = {
 	7 : new RefreshDisplay("There are zaombies in the hall way!"),
 	8 : new Choice([
 			new Option(["Fight!", new gotoLine(13)]),
-			new Option(["Stay", new gotoLine(11), new systemMessage("Zombies came onto you and ate you.")])
+			new Option(["Stay", new gotoLine(12), new systemMessage("Zombies came onto you and ate you.")])
 		]),
 	9 : new RefreshDisplay("Zombies are tyring to break in!"),
 	10 : new Choice([
@@ -61,18 +62,18 @@ const EVENTS = {
 };
 
 
-var inv = new Inventory(0, 3, 0, 0, 0, 0);
+var inv = new Inventory(0, 2, 0, 0, 0, 0);
 
 var save = new Save(0, false, inv);
 
-function Weapon(name, position, type, atk, capacity, carryCapacity, weight, dualable) {
+function Weapon(name, position, type, atk, capacity, carryCapacity, cooldown, dualable) {
 	this.name = name;
 	this.position = position; //Inventory position of the weapon. 1 = mainArm, 2 = sideArm;
 	this.type = type; // 1 = Gun, 2 = Melee;
 	this.atk = atk;   // The base number of the damage this weapon gives;
 	this.capacity = capacity; // ammo capacity;
 	this.carryCapacity = carryCapacity; // total amount of ammo this weapon can carry;
-	this.weight = weight; // the more heavy this weapon is, the less round of attack can be made;
+	this.cooldown = cooldown; // the more heavy this weapon is, the less round of attack can be made;
 	this.dualable = dualable; // if this weapon can be dual;
 }
 
@@ -164,7 +165,11 @@ function weaponEquip(weaponID) {
 			if(WEAPONS[weaponID].position == 1) {
 				inv.mainArm = weaponID;
 			} else if(WEAPONS[weaponID].position == 2) {
+				if (WEAPONS[weaponID].dualable > 0) {
+					inv.sideArm = WEAPONS[weaponID].dualable;
+				} else {
 				inv.sideArm  = weaponID;
+				}
 			}
 		}
 	}
