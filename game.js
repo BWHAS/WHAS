@@ -45,7 +45,7 @@ const EVENTS = {
 			new Option(["Yes", new gotoLine(7), new systemMessage("You opened the door.")]),
 			new Option(["No", new gotoLine(9), new systemMessage("You just stood in front of the and did nothing.")])
 		]),
-	7 : new RefreshDisplay("There are zaombies in the hall way!"),
+	7 : new RefreshDisplay("There are zombies in the hall way!"),
 	8 : new Choice([
 			new Option(["Fight!", new gotoLine(13)]),
 			new Option(["Stay", new gotoLine(12), new systemMessage("Zombies came onto you and ate you.")])
@@ -98,7 +98,7 @@ function initializeGame() {
 	this.run = run;
 	
 	function run() {
-		inv = new Inventory(0, 3, 0, 0, 0, 0);
+		inv = new Inventory(0, 2, 0, 0, 0, 0);
 		save = new Save(0, false, inv);
 		document.getElementById("output").innerHTML = "";
 	}
