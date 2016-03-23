@@ -4,8 +4,13 @@ const WEAPONS = {
 	0 : new Weapon("Fire Axe", 2, 2, 70, 0, 0, 70, 0),
 	1 : new Weapon("Crowbar",  2, 2, 50, 0, 0, 50, 0),
 	2 : new Weapon("Pistol",   2, 1, 20, 15, 0, 25, 3),
-	3 : new Weapon("Dual Pistol", 2, 1, 40, 30, 9, 20, 0)
+	3 : new Weapon("Dual Pistol", 2, 1, 20, 30, 9, 20, 0)
 };
+
+const ITEMS = {
+	0 : new Item("Pipe Bomb", 4),
+	1 : new Item("Bile Bomb", 4)
+}
 
 const IMAGES = {
 	0 : new ImageURL("https://choose-your-own-adventure-leohu.c9users.io/picture/loading.jpg", "#000")
@@ -47,18 +52,35 @@ const EVENTS = {
 		]),
 	7 : new RefreshDisplay("There are zombies in the hall way!"),
 	8 : new Choice([
-			new Option(["Fight!", new gotoLine(13)]),
+			new Option(["Fight!", new gotoLine(13), new systemMessage("You decided to fight against the zombies")]),
 			new Option(["Stay", new gotoLine(12), new systemMessage("Zombies came onto you and ate you.")])
 		]),
 	9 : new RefreshDisplay("Zombies are tyring to break in!"),
 	10 : new Choice([
-			new Option(["Fight!", new gotoLine(13)]),
+			new Option(["Fight!", new gotoLine(13), new systemMessage("You decided to fight against the zombies")]),
 			new Option(["Stay", new gotoLine(11), new systemMessage("Zombies came onto you and ate you.")])
 		]),
 	11 : new RefreshDisplay("Game Over"),
 	12 : new Choice([
 			new Option(["Restart", new gotoLine(0), new initializeGame()])
-		])
+		]),
+	13 : new RefreshDisplay("Bots are killing the zombies in the hall way."),
+	14 : new Choice([
+			new Option(["Kill zombies with them", new gotoLine(15), new systemMessage("The way is clear.")]),
+			new Option(["Go ahead and see what's happining", new gotoLine(11), 
+				new systemMessage("Suddently, an incoming Charger charged you through a window from the eighth floor. The charger died... with you.")])
+		]),
+	15 : new RefreshDisplay("On the table, there is a " + ITEMS[0].name + " and a " + ITEMS[1].name + "on the table."),
+	16 : new Choice([
+			new Option(["Pickup the " + ITEMS[0].name, new gotoLine(17), new systemMessage("You picked up the " + ITEMS[0].name)]),
+			new Option(["Pickup the " + ITEMS[1].name, new gotoLine(17), new systemMessage("You picked up the " + ITEMS[1].name)])
+		]),
+	17 : new RefreshDisplay("The elevator is still on!"),
+	18 : new Choice([
+			new Option(["Get in the elevator and go to the first floor", new gotoLine(19)]),
+			new Option(["We are not suppose to use the elevator in a fire. Find another way!"], new gotoLine(11),
+				new systemMessage("Sadly the stair is blocked. There is no other way to go. The hotel is now filled with fire. Survivors are failed to escape."))
+			])
 };
 
 
@@ -75,6 +97,11 @@ function Weapon(name, position, type, atk, capacity, carryCapacity, cooldown, du
 	this.carryCapacity = carryCapacity; // total amount of ammo this weapon can carry;
 	this.cooldown = cooldown; // the more heavy this weapon is, the less round of attack can be made;
 	this.dualable = dualable; // if this weapon can be dual;
+}
+
+function Item(name, position) {
+	this.name = name;
+	this.position = position;
 }
 
 function ImageURL(URL, BGColor) {

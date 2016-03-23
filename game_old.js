@@ -7,8 +7,6 @@ const CHOICES = {
 	5 : new choice("Zombies are trying to break to door!", ["Fight!", "Stay"], [6, 0], [0, 1])
 };
 
-
-
 function inputHandler(input) {
 	if (input < 0) {
 		updateGame(1);
